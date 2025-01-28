@@ -5,17 +5,14 @@ import java.time.LocalDateTime;
 public class ReportDTO {
     private String employeeName;
     private String squadName;
-    private int spentHours;
-    private LocalDateTime createdAt;
+    private int totalspentHours;
+    private int squadId;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
-    public ReportDTO() {
-        this.employeeName = employeeName;
-        this.squadName = squadName;
-        this.spentHours = spentHours;
-        this.createdAt = createdAt;
-    }
+    public ReportDTO() {}
 
-    // Getters e Setters
+    // Getters e Setters Existentes
     public String getEmployeeName() {
         return employeeName;
     }
@@ -32,20 +29,37 @@ public class ReportDTO {
         this.squadName = squadName;
     }
 
-    public int getSpentHours() {
-        return spentHours;
+    public int getTotalspentHours() {
+        return totalspentHours;
     }
 
-    public void setSpentHours(int spentHours) {
-        this.spentHours = spentHours;
+    public void setTotalspentHours(int totalspentHours) {
+        this.totalspentHours = totalspentHours;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+
+    // Getters e Setters dos Novos Campos
+    public int getSquadId() {
+        return squadId;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setSquadId(int squadId) {
+        this.squadId = squadId;
+    }
 
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
     }
 }
