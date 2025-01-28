@@ -12,41 +12,7 @@ import java.util.List;
 
 @Repository
 public class SquadDaoImpl implements SquadDao<Squad>{
-    @Override
-    public List<Squad> find() {
-        List<Squad> items = new ArrayList<>();
 
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        final String sql = "SELECT * FROM squad;";
-
-        try {
-            connection = ConnectionFactory.getConnection();
-            preparedStatement = connection.prepareStatement(sql);
-
-            resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-
-                Squad squad = new Squad();
-
-                squad.setId(resultSet.getInt("id"));
-
-                squad.setName(resultSet.getString("description"));
-
-                items.add(squad);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            ConnectionFactory.close(preparedStatement, connection, resultSet);
-        }
-
-        return items;
-    }
 
     @Override
     public int create(Squad entity) {
@@ -57,7 +23,7 @@ public class SquadDaoImpl implements SquadDao<Squad>{
 
         int id = -1;
 
-        String sql = "INSERT INTO squad(name) VALUES (?,?)";
+        String sql = "INSERT INTO squad(name) VALUES (?)";
 
         try {
             connection = ConnectionFactory.getConnection();
@@ -66,9 +32,7 @@ public class SquadDaoImpl implements SquadDao<Squad>{
 
             preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            preparedStatement.setString(2, entity.getName());
-
-
+            preparedStatement.setString(1, entity.getName());
 
 
             preparedStatement.execute();

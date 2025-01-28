@@ -14,46 +14,6 @@ import java.util.List;
 public class EmployeeDaoImpl implements EmployeeDao<Employee>{
 
     @Override
-    public List<Employee> find() {
-        List<Employee> items = new ArrayList<>();
-
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        final String sql = "SELECT * FROM employee ;";
-
-        try {
-            connection = ConnectionFactory.getConnection();
-            preparedStatement = connection.prepareStatement(sql);
-
-            resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-
-                Employee employee = new Employee();
-
-                employee.setId(resultSet.getInt("id"));
-
-                employee.setName(resultSet.getString("name"));
-
-                employee.setEstimatedHours(resultSet.getInt("estimatedhours"));
-
-                employee.setSquadId(resultSet.getInt("squadid"));
-
-                items.add(employee);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            ConnectionFactory.close(preparedStatement, connection, resultSet);
-        }
-
-        return items;
-    }
-
-    @Override
     public int create(Employee entity) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -61,9 +21,7 @@ public class EmployeeDaoImpl implements EmployeeDao<Employee>{
 
         int id = -1;
 
-        String sql = "INSERT INTO employee(name,";
-        sql += " estimatedHours, squadId";
-        sql += " VALUES(?, ?, ?, ?);";
+        String sql = "INSERT INTO employee (name, estimatedHours, squadId) VALUES (?, ?, ?);";
 
         try {
             connection = ConnectionFactory.getConnection();
@@ -72,9 +30,9 @@ public class EmployeeDaoImpl implements EmployeeDao<Employee>{
 
             preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            preparedStatement.setString(2, entity.getName());
-            preparedStatement.setInt(3, entity.getEstimatedHours());
-            preparedStatement.setInt(4, entity.getSquadId());
+            preparedStatement.setString(1, entity.getName());
+            preparedStatement.setInt(2, entity.getEstimatedHours());
+            preparedStatement.setInt(3, entity.getSquadId());
 
 
 

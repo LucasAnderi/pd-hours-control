@@ -10,50 +10,14 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Repository
 public class ReportDaoImpl implements ReportDao<Report> {
-    @Override
-    public List<Report> find() {
-        List<Report> items = new ArrayList<>();
 
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        final String sql = "SELECT * FROM report;";
-
-        try {
-            connection = ConnectionFactory.getConnection();
-            preparedStatement = connection.prepareStatement(sql);
-
-            resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-
-                Report report = new Report();
-
-                report.setId(resultSet.getInt("id"));
-
-                report.setDescription(resultSet.getString("description"));
-
-                report.setSpentHours(resultSet.getInt("spenthours"));
-
-                report.setEmployeeId(resultSet.getInt("squadid"));
-
-                items.add(report);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            ConnectionFactory.close(preparedStatement, connection, resultSet);
-        }
-
-        return items;
-    }
 
 
     @Override
@@ -64,80 +28,85 @@ public class ReportDaoImpl implements ReportDao<Report> {
 
         int id = -1;
 
-        String sql = "INSERT INTO report(description,";
-        sql += " spentHours, employeeId";
-        sql += " VALUES(?, ?, ?, ?);";
+        // Corrigindo a query SQL
+        String sql = "INSERT INTO report(description, totalspentHours, employeeId) VALUES(?, ?, ?)";
 
         try {
             connection = ConnectionFactory.getConnection();
 
+            // Desativando auto-commit para controle manual da transação
             connection.setAutoCommit(false);
 
+            // Preparando a query e solicitando a recuperação da chave gerada
             preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            preparedStatement.setString(2, entity.getDescription());
-            preparedStatement.setInt(3, entity.getSpentHours());
-            preparedStatement.setInt(4, entity.getEmployeeId());
+            // Setando os valores nos placeholders
+            preparedStatement.setString(1, entity.getDescription());
+            preparedStatement.setInt(2, entity.getSpentHours());
+            preparedStatement.setInt(3, entity.getEmployeeId());
 
-
-
+            // Executando a query
             preparedStatement.execute();
 
+            // Recuperando a chave gerada automaticamente (ID)
             resultSet = preparedStatement.getGeneratedKeys();
-
             if (resultSet.next()) {
                 id = resultSet.getInt(1);
             }
 
+            // Confirmando a transação
             connection.commit();
             return id;
         } catch (SQLException e) {
             e.printStackTrace();
 
+            // Revertendo a transação em caso de erro
             try {
-                connection.rollback();
+                if (connection != null) {
+                    connection.rollback();
+                }
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
             return id;
         } finally {
+            // Fechando os recursos (preparedStatement, connection, resultSet)
             ConnectionFactory.close(preparedStatement, connection, resultSet);
         }
     }
 
-    //retorna as horas gastas de cada membro da squad
     @Override
-    public List<ReportDTO> findEspentHoursofEmployeesBySquadAndPeriod(int squadId, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<ReportDTO> getSpentHoursByMembersAndPeriod(int squadId, LocalDateTime startDate, LocalDateTime endDate) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
-        List<ReportDTO> reports = new ArrayList<>();
+        List<ReportDTO> resultList = new ArrayList<>();
 
         String sql = """
-            SELECT 
-                e.name AS employee_name,
-                s.name AS squad_name,
-                r.spentHours,
-                r.createdAt
-            FROM 
-                Reports r
-            JOIN 
-                Employees e ON r.employeeId = e.id
-            JOIN 
-                Squads s ON e.squadId = s.id
-            WHERE 
-                s.id = ?
-                AND r.createdAt BETWEEN ? AND ?
-            ORDER BY 
-                r.createdAt ASC
-        """;
+        SELECT 
+            e.name AS employee_name,
+            SUM(r.spentHours) AS totalSpentHours
+        FROM 
+            report r
+        JOIN 
+            employee e ON r.employeeId = e.id
+        JOIN 
+            squad s ON e.squadId = s.id
+        WHERE 
+            s.id = ?
+            AND r.createdAt BETWEEN ? AND ?
+        GROUP BY 
+            e.name
+        ORDER BY 
+            e.name
+    """;
 
         try {
             connection = ConnectionFactory.getConnection();
             preparedStatement = connection.prepareStatement(sql);
 
-            // Setando os parâmetros
+
             preparedStatement.setLong(1, squadId);
             preparedStatement.setTimestamp(2, Timestamp.valueOf(startDate));
             preparedStatement.setTimestamp(3, Timestamp.valueOf(endDate));
@@ -145,15 +114,11 @@ public class ReportDaoImpl implements ReportDao<Report> {
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                ReportDTO report = new ReportDTO();
+                ReportDTO employeeHours = new ReportDTO();
+                employeeHours.setEmployeeName(resultSet.getString("employee_name"));
+                employeeHours.setTotalspentHours(resultSet.getInt("totalSpentHours"));
 
-                // Montando o objeto Report a partir do ResultSet
-                report.setEmployeeName(resultSet.getString("employee_name"));
-                report.setSquadName(resultSet.getString("squad_name"));
-                report.setSpentHours(resultSet.getInt("spentHours"));
-                report.setCreatedAt(resultSet.getTimestamp("createdAt").toLocalDateTime());
-
-                reports.add(report);
+                resultList.add(employeeHours);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -161,42 +126,39 @@ public class ReportDaoImpl implements ReportDao<Report> {
             ConnectionFactory.close(preparedStatement, connection, resultSet);
         }
 
-        return reports;
+        return resultList;
     }
-    // retorna total de horas da squad
-    @Override
-    public int getTotalSpentHoursBySquadAndPeriod(int squadId, LocalDateTime startDate, LocalDateTime endDate) {
+
+    public List<Map<String, Object>> getTotalSpentHoursBySquadAndPeriod(int squadId, LocalDateTime startDate, LocalDateTime endDate) {
+        List<Map<String, Object>> resultList = new ArrayList<>();
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
-        int totalSpentHours = 0;
-
         String sql = """
-            SELECT 
-                SUM(r.spentHours) AS total_hours
-            FROM 
-                Reports r
-            JOIN 
-                Employees e ON r.employeeId = e.id
-            WHERE 
-                e.squadId = ?
-                AND r.createdAt BETWEEN ? AND ?
+            SELECT SUM(r.totalspentHours) AS totalSpentHours
+            FROM report r
+            JOIN employee e ON r.employeeId = e.id
+            JOIN squad s ON e.squadId = s.id
+            WHERE s.id = ?
+            AND r.createdAt BETWEEN ? AND ?
+            GROUP BY r.createdAt
         """;
 
         try {
             connection = ConnectionFactory.getConnection();
             preparedStatement = connection.prepareStatement(sql);
 
-            // Setando os parâmetros
             preparedStatement.setInt(1, squadId);
             preparedStatement.setTimestamp(2, Timestamp.valueOf(startDate));
             preparedStatement.setTimestamp(3, Timestamp.valueOf(endDate));
 
             resultSet = preparedStatement.executeQuery();
 
-            if (resultSet.next()) {
-                totalSpentHours = resultSet.getInt("total_hours");
+            while (resultSet.next()) {
+                Map<String, Object> row = new HashMap<>();
+                row.put("totalSpentHours", resultSet.getDouble("totalSpentHours"));
+                resultList.add(row);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -204,6 +166,7 @@ public class ReportDaoImpl implements ReportDao<Report> {
             ConnectionFactory.close(preparedStatement, connection, resultSet);
         }
 
-        return totalSpentHours;
+        return resultList;
     }
+
 }
