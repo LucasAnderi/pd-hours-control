@@ -2,14 +2,17 @@ package org.pd.pdhcapi.controller;
 
 
 import org.pd.pdhc.models.Report;
+
+import org.pd.pdhc.models.dto.ReportDTO;
 import org.pd.pdhcapi.service.ReportRestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/report")
@@ -23,18 +26,6 @@ public class ReportRestController {
         this.reportService = reportService;
     }
 
-
-
-    @GetMapping("/total-hour-by-squad")
-    public ResponseEntity<Integer> getTotalSpentHoursBySquad(
-                                                             @RequestParam int squadId,
-                                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-                                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate
-    ) {
-        int totalHours = reportService.getTotalSpentHoursBySquad(squadId, startDate, endDate);
-        return ResponseEntity.ok(totalHours);
-    }
-
     @PostMapping
     public ResponseEntity<Integer> createReport(@RequestBody Report report) {
         int reportId = reportService.create(report);
@@ -44,6 +35,31 @@ public class ReportRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/spent-hours-by-member")
+    public List<ReportDTO> getSpentHoursByMembers(@RequestBody ReportDTO reportDTO) {
+        return reportService.getSpentHoursByMembers(reportDTO.getSquadId(), reportDTO.getStartDate(), reportDTO.getEndDate());
+    }
+
+
+    //
+    @PostMapping("/total-hours-by-squad")
+    public Map<String, Object> getTotalSpentHoursBySquad(@RequestBody ReportDTO reportDTO) {
+        int totalSpentHours = reportService.getTotalSpentHoursBySquad(reportDTO.getSquadId(), reportDTO.getStartDate(), reportDTO.getEndDate());
+
+        // Retornando o total de horas em um mapa
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalSpentHours", totalSpentHours);
+        return response;
+    }
+
+    //
+    @PostMapping("/average-hours-by-squad")
+    public Map<String, Object> getAverageSpentHoursBySquad(@RequestBody ReportDTO reportDTO) {
+        // Chama o serviço para obter a média de horas gastas por dia
+        return reportService.getAverageSpentHoursBySquad(reportDTO.getSquadId(), reportDTO.getStartDate().toString(), reportDTO.getEndDate().toString());
+    }
+
 }
 
 
