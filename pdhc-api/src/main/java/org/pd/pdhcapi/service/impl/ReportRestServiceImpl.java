@@ -16,6 +16,10 @@ public class ReportRestServiceImpl implements ReportRestService<Report>{
     @Autowired
     private ReportDao reportDao;
 
+    @Override
+    public int create(Report entity) {
+        return reportDao.create(entity);
+    }
 
     @Override
     public List<ReportDTO> findHoursSpentByEmployeewithSquadIdandPeriod(int squadId, LocalDateTime startDate, LocalDateTime endDate) {
@@ -26,5 +30,7 @@ public class ReportRestServiceImpl implements ReportRestService<Report>{
     public int getTotalSpentHoursBySquad(int squadId, LocalDateTime startDate, LocalDateTime endDate) {
         return reportDao.getTotalSpentHoursBySquadAndPeriod( squadId ,startDate,endDate);
     }
+
+
 
 }

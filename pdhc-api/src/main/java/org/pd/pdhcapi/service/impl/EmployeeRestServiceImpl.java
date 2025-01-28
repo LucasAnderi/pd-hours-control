@@ -7,14 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmployeeRestServiceImpl implements EmployeeRestService {
+public class EmployeeRestServiceImpl implements EmployeeRestService<Employee> {
 
     @Autowired
     private EmployeeDao employeeDao;
 
 
     @Override
-    public int createEmployee(Employee employee) {
-        return employeeDao.create(employee);
+    public int create(Employee entity) {
+        return employeeDao.create(entity);
     }
 }
