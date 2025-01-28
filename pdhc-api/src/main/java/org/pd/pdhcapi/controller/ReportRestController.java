@@ -42,22 +42,25 @@ public class ReportRestController {
     }
 
 
-    //
     @PostMapping("/total-hours-by-squad")
     public Map<String, Object> getTotalSpentHoursBySquad(@RequestBody ReportDTO reportDTO) {
         int totalSpentHours = reportService.getTotalSpentHoursBySquad(reportDTO.getSquadId(), reportDTO.getStartDate(), reportDTO.getEndDate());
 
-        // Retornando o total de horas em um mapa
+
         Map<String, Object> response = new HashMap<>();
         response.put("totalSpentHours", totalSpentHours);
         return response;
     }
 
-    //
+
     @PostMapping("/average-hours-by-squad")
     public Map<String, Object> getAverageSpentHoursBySquad(@RequestBody ReportDTO reportDTO) {
-        // Chama o serviço para obter a média de horas gastas por dia
-        return reportService.getAverageSpentHoursBySquad(reportDTO.getSquadId(), reportDTO.getStartDate().toString(), reportDTO.getEndDate().toString());
+
+        return reportService.getAverageSpentHoursBySquad(
+                reportDTO.getSquadId(),
+                reportDTO.getStartDate().toString(),
+                reportDTO.getEndDate().toString()
+        );
     }
 
 }

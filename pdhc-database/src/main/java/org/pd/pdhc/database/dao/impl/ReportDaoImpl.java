@@ -116,7 +116,7 @@ public class ReportDaoImpl implements ReportDao<Report> {
             while (resultSet.next()) {
                 ReportDTO employeeHours = new ReportDTO();
                 employeeHours.setEmployeeName(resultSet.getString("employee_name"));
-                employeeHours.setTotalspentHours(resultSet.getInt("totalSpentHours"));
+                employeeHours.setTotalSpentHours(resultSet.getInt("totalSpentHours"));
 
                 resultList.add(employeeHours);
             }

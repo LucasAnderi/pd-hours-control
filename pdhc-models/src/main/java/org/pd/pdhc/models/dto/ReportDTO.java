@@ -5,14 +5,14 @@ import java.time.LocalDateTime;
 public class ReportDTO {
     private String employeeName;
     private String squadName;
-    private int totalspentHours;
+    private int totalSpentHours;
     private int squadId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
     public ReportDTO() {}
 
-    // Getters e Setters Existentes
+
     public String getEmployeeName() {
         return employeeName;
     }
@@ -29,12 +29,12 @@ public class ReportDTO {
         this.squadName = squadName;
     }
 
-    public int getTotalspentHours() {
-        return totalspentHours;
+    public int getTotalSpentHours() {
+        return totalSpentHours;
     }
 
-    public void setTotalspentHours(int totalspentHours) {
-        this.totalspentHours = totalspentHours;
+    public void setTotalSpentHours(int totalspentHours) {
+        this.totalSpentHours = totalspentHours;
     }
 
 
