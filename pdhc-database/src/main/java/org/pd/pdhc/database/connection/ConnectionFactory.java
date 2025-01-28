@@ -6,7 +6,7 @@ public class ConnectionFactory {
 
     private static Connection connection = null;
 
-    private static final String URL = "jdbc:postgresql://localhost:5432/pdhc-database";
+    private static final String URL = "jdbc:postgresql://localhost:5432/pdhc_database";
 
     private static final String USER = "postgres";
 
