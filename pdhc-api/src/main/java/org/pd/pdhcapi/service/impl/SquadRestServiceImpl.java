@@ -6,6 +6,8 @@ import org.pd.pdhcapi.service.SquadRestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class SquadRestServiceImpl implements SquadRestService<Squad> {
 
@@ -17,4 +19,6 @@ public class SquadRestServiceImpl implements SquadRestService<Squad> {
     public int create(Squad entity) {
         return squadDao.create(entity);
     }
+
+
 }
