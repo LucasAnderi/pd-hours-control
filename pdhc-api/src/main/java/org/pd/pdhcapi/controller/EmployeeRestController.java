@@ -1,6 +1,7 @@
 package org.pd.pdhcapi.controller;
 
 import org.pd.pdhc.models.Employee;
+import org.pd.pdhc.models.Squad;
 import org.pd.pdhcapi.service.EmployeeRestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,12 +21,15 @@ public class EmployeeRestController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createEmployee(@RequestBody Employee employee) {
-        try {
-            employeeService.createEmployee(employee);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Employee cadastrado com sucesso!");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    public ResponseEntity<Integer> createEmployee(@RequestBody Employee employee) {
+
+        int employeeId = employeeService.create(employee);
+        if(employeeId != -1){
+            return new ResponseEntity<>(employeeId,HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
     }
+
 }
