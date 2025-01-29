@@ -20,7 +20,7 @@ public class EmployeeRestController {
         this.employeeService = employeeService;
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Integer> createEmployee(@RequestBody Employee employee) {
 
         int employeeId = employeeService.create(employee);

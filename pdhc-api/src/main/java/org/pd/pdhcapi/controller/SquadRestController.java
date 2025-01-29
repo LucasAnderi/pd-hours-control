@@ -16,7 +16,7 @@ public class SquadRestController {
     @Autowired
     private SquadRestService squadService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Integer> createSquad(@RequestBody Squad squad) {
         int squadId = squadService.create(squad);
         if (squadId != -1) {
