@@ -21,7 +21,7 @@ public class EmployeeDaoImpl implements EmployeeDao<Employee>{
 
         int id = -1;
 
-        String sql = "INSERT INTO employee (name, estimatedHours, squadId) VALUES (?, ?, ?);";
+        String sql = "INSERT INTO employee (name, estimatedhours, squad_id) VALUES (?, ?, ?);";
 
         try {
             connection = ConnectionFactory.getConnection();
