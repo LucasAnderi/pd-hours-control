@@ -1,6 +1,5 @@
 package org.pd.pdhc.database.dao.impl;
 
-
 import org.pd.pdhc.database.connection.ConnectionFactory;
 import org.pd.pdhc.database.dao.ReportDao;
 import org.pd.pdhc.models.Report;
@@ -8,59 +7,42 @@ import org.pd.pdhc.models.dto.ReportDTO;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 @Repository
 public class ReportDaoImpl implements ReportDao<Report> {
-
-
 
     @Override
     public int create(Report entity) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-
         int id = -1;
 
-        // Corrigindo a query SQL
-        String sql = "INSERT INTO report(description, totalspentHours, employeeId) VALUES(?, ?, ?)";
+        String sql = "INSERT INTO report(description, spenthours, employee_id) VALUES(?, ?, ?)";
 
         try {
             connection = ConnectionFactory.getConnection();
-
-            // Desativando auto-commit para controle manual da transação
             connection.setAutoCommit(false);
 
-            // Preparando a query e solicitando a recuperação da chave gerada
             preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
-            // Setando os valores nos placeholders
             preparedStatement.setString(1, entity.getDescription());
             preparedStatement.setInt(2, entity.getSpentHours());
             preparedStatement.setInt(3, entity.getEmployeeId());
 
-            // Executando a query
             preparedStatement.execute();
-
-            // Recuperando a chave gerada automaticamente (ID)
             resultSet = preparedStatement.getGeneratedKeys();
             if (resultSet.next()) {
                 id = resultSet.getInt(1);
             }
 
-            // Confirmando a transação
             connection.commit();
-            return id;
         } catch (SQLException e) {
             e.printStackTrace();
-
-            // Revertendo a transação em caso de erro
             try {
                 if (connection != null) {
                     connection.rollback();
@@ -68,48 +50,42 @@ public class ReportDaoImpl implements ReportDao<Report> {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            return id;
         } finally {
-            // Fechando os recursos (preparedStatement, connection, resultSet)
             ConnectionFactory.close(preparedStatement, connection, resultSet);
         }
+        return id;
     }
 
     @Override
-    public List<ReportDTO> getSpentHoursByMembersAndPeriod(int squadId, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<ReportDTO> getSpentHoursByMembersAndPeriod(int squadId, String startDate, String endDate) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-
         List<ReportDTO> resultList = new ArrayList<>();
 
         String sql = """
-        SELECT 
-            e.name AS employee_name,
-            SUM(r.spentHours) AS totalSpentHours
-        FROM 
-            report r
-        JOIN 
-            employee e ON r.employeeId = e.id
-        JOIN 
-            squad s ON e.squadId = s.id
-        WHERE 
-            s.id = ?
-            AND r.createdAt BETWEEN ? AND ?
-        GROUP BY 
-            e.name
-        ORDER BY 
-            e.name
-    """;
+        SELECT e.name AS employee_name, SUM(r.spentHours) AS totalSpentHours 
+        FROM report r
+        JOIN employee e ON r.employee_id = e.id
+        JOIN squad s ON e.squad_id = s.id
+        WHERE s.id = ? AND r.created_at BETWEEN ? AND ?
+        GROUP BY e.name ORDER BY e.name""";
 
         try {
             connection = ConnectionFactory.getConnection();
             preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, squadId);
 
-
-            preparedStatement.setLong(1, squadId);
-            preparedStatement.setTimestamp(2, Timestamp.valueOf(startDate));
-            preparedStatement.setTimestamp(3, Timestamp.valueOf(endDate));
+            if (startDate != null) {
+                preparedStatement.setDate(2, Date.valueOf(String.valueOf(startDate)));
+            } else {
+                preparedStatement.setNull(2, Types.DATE);
+            }
+            if (endDate != null) {
+                preparedStatement.setDate(3, Date.valueOf(String.valueOf(endDate)));
+            } else {
+                preparedStatement.setNull(3, Types.DATE);
+            }
 
             resultSet = preparedStatement.executeQuery();
 
@@ -117,49 +93,56 @@ public class ReportDaoImpl implements ReportDao<Report> {
                 ReportDTO employeeHours = new ReportDTO();
                 employeeHours.setEmployeeName(resultSet.getString("employee_name"));
                 employeeHours.setTotalSpentHours(resultSet.getInt("totalSpentHours"));
-
                 resultList.add(employeeHours);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             ConnectionFactory.close(preparedStatement, connection, resultSet);
         }
-
         return resultList;
     }
+    @Override
+    public List<Map<String, Object>> getReportsBySquadAndPeriod(int squadId, String startDate, String endDate) {
 
-    public List<Map<String, Object>> getTotalSpentHoursBySquadAndPeriod(int squadId, LocalDateTime startDate, LocalDateTime endDate) {
         List<Map<String, Object>> resultList = new ArrayList<>();
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
+        // Converter String para LocalDateTime (meia-noite do dia informado) e depois para Timestamp
+        LocalDate localStartDate = LocalDate.parse(startDate);
+        LocalDate localEndDate = LocalDate.parse(endDate);
+
+        Timestamp convertedStartDate = Timestamp.valueOf(localStartDate.atStartOfDay());
+        Timestamp convertedEndDate = Timestamp.valueOf(localEndDate.atTime(23, 59, 59));
+
         String sql = """
-            SELECT SUM(r.totalspentHours) AS totalSpentHours
-            FROM report r
-            JOIN employee e ON r.employeeId = e.id
-            JOIN squad s ON e.squadId = s.id
-            WHERE s.id = ?
-            AND r.createdAt BETWEEN ? AND ?
-            GROUP BY r.createdAt
-        """;
+        SELECT r.spenthours
+        FROM report r
+        JOIN employee e ON r.employee_id = e.id
+        WHERE e.squad_id = ? AND r.created_at BETWEEN ? AND ?
+    """;
 
         try {
             connection = ConnectionFactory.getConnection();
             preparedStatement = connection.prepareStatement(sql);
-
             preparedStatement.setInt(1, squadId);
-            preparedStatement.setTimestamp(2, Timestamp.valueOf(startDate));
-            preparedStatement.setTimestamp(3, Timestamp.valueOf(endDate));
+            preparedStatement.setTimestamp(2, convertedStartDate);
+            preparedStatement.setTimestamp(3, convertedEndDate);
+
+
 
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 Map<String, Object> row = new HashMap<>();
-                row.put("totalSpentHours", resultSet.getDouble("totalSpentHours"));
+                row.put("spenthours", resultSet.getInt("spenthours"));
                 resultList.add(row);
             }
+
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -168,5 +151,4 @@ public class ReportDaoImpl implements ReportDao<Report> {
 
         return resultList;
     }
-
 }
