@@ -6,7 +6,10 @@ import org.pd.pdhcapi.service.ReportRestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,57 +24,62 @@ public class ReportRestServiceImpl implements ReportRestService{
     public int create(Object entity) {
         return reportDao.create(entity);
     }
-    public List<ReportDTO> getSpentHoursByMembers(int squadId, LocalDateTime startDate, LocalDateTime endDate) {
+
+    @Override
+    public List<ReportDTO> getSpentHoursByMembers(int squadId, String startDate, String endDate) {
+        // Chama o DAO para recuperar as horas gastas por cada membro no período
         return reportDao.getSpentHoursByMembersAndPeriod(squadId, startDate, endDate);
     }
 
     @Override
-    public int getTotalSpentHoursBySquad(int squadId, LocalDateTime startDate, LocalDateTime endDate) {
+    public Map<String, Object> getTotalSpentHoursBySquad(int squadId, String startDate, String endDate) {
 
-        LocalDateTime start = LocalDateTime.parse(startDate + "T00:00:00");
-        LocalDateTime end = LocalDateTime.parse(endDate + "T23:59:59");
+        // Chama o DAO para obter os reports no período
+        List<Map<String, Object>> reports = reportDao.getReportsBySquadAndPeriod(squadId, startDate, endDate);
 
-        // Chama o DAO para recuperar os dados
-        List<Map<String, Object>> totalHoursData = reportDao.getTotalSpentHoursBySquadAndPeriod(squadId, start, end);
-
-        // Calcula o número de dias corridos entre as datas
-        long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(start.toLocalDate(), end.toLocalDate()) + 1;
-
-        // Soma as horas gastas
-        double totalSpentHours = totalHoursData.stream()
-                .mapToDouble(row -> (double) row.get("totalSpentHours"))
+        // Somar todas as horas gastas
+        int totalSpentHours = reports.stream()
+                .mapToInt(row -> (int) row.get("spenthours"))
                 .sum();
 
-        return (int) totalSpentHours;
-    }
+        // Preparar o resultado
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalSpentHours", totalSpentHours);
 
+        return result;
+    }
 
     @Override
     public Map<String, Object> getAverageSpentHoursBySquad(int squadId, String startDate, String endDate) {
-        LocalDateTime start = LocalDateTime.parse(startDate + "T00:00:00");
-        LocalDateTime end = LocalDateTime.parse(endDate + "T23:59:59");
+        // Formatar as datas em string para comparação
 
-        // Chama o DAO para recuperar os dados
-        List<Map<String, Object>> totalHoursData = reportDao.getTotalSpentHoursBySquadAndPeriod(squadId, start, end);
+        // Buscar todos os reports no período
+        List<Map<String, Object>> reports = reportDao.getReportsBySquadAndPeriod(squadId, startDate, endDate);
 
-        // Calcula o número de dias corridos entre as datas
-        long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(start.toLocalDate(), end.toLocalDate()) + 1;
+        // Converter as datas para LocalDate para calcular numero de dias entre startData e
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startLocalDate = LocalDate.parse(startDate, formatter);
+        LocalDate endLocalDate = LocalDate.parse(endDate, formatter);
 
-        // Soma as horas gastas
-        double totalSpentHours = totalHoursData.stream()
-                .mapToDouble(row -> (double) row.get("totalSpentHours"))
+        // Calcular o número de dias corridos entre as datas
+        long daysBetween = ChronoUnit.DAYS.between(startLocalDate, endLocalDate) + 1;
+
+        // Somar todas as horas gastas
+        int totalSpentHours = reports.stream()
+                .mapToInt(row -> (int) row.get("spenthours"))
                 .sum();
 
-        // Calcula a média
-        double averageSpentHours = totalSpentHours / daysBetween;
+        // Calcular a média de horas gastas por dia
+        double averageSpentHours = daysBetween > 0 ? (double) totalSpentHours / daysBetween : 0;
 
-
+        // Preparar o resultado
         Map<String, Object> result = new HashMap<>();
         result.put("squadId", squadId);
-        result.put("averageSpentHoursPerDay", averageSpentHours);
         result.put("totalSpentHours", totalSpentHours);
+        result.put("averageSpentHoursPerDay", averageSpentHours);
         result.put("daysInPeriod", daysBetween);
 
+        System.out.println("Total spent hours: " + totalSpentHours);
         return result;
     }
 
