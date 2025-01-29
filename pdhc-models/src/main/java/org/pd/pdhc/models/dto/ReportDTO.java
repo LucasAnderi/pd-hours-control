@@ -1,14 +1,16 @@
 package org.pd.pdhc.models.dto;
 
-import java.time.LocalDateTime;
+import java.sql.Date;
+
+
 
 public class ReportDTO {
     private String employeeName;
     private String squadName;
     private int totalSpentHours;
     private int squadId;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private String startDate;
+    private String endDate;
 
     public ReportDTO() {}
 
@@ -47,19 +49,19 @@ public class ReportDTO {
         this.squadId = squadId;
     }
 
-    public LocalDateTime getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDateTime getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDateTime endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 }
