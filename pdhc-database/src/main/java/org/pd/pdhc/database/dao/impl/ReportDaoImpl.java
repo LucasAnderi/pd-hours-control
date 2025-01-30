@@ -3,7 +3,7 @@ package org.pd.pdhc.database.dao.impl;
 import org.pd.pdhc.database.connection.ConnectionFactory;
 import org.pd.pdhc.database.dao.ReportDao;
 import org.pd.pdhc.models.Report;
-import org.pd.pdhc.models.dto.ReportDTO;
+import org.pd.pdhc.models.dto.ReportMemberDTO;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -57,43 +57,45 @@ public class ReportDaoImpl implements ReportDao<Report> {
     }
 
     @Override
-    public List<ReportDTO> getSpentHoursByMembersAndPeriod(int squadId, String startDate, String endDate) {
+    public List<ReportMemberDTO> getSpentHoursByMembersAndPeriod(int squadId, String startDate, String endDate) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        List<ReportDTO> resultList = new ArrayList<>();
+        List<ReportMemberDTO> resultList = new ArrayList<>();
+
+        // Convertendo datas
+        LocalDate localStartDate = LocalDate.parse(startDate);
+        LocalDate localEndDate = LocalDate.parse(endDate);
+
+        Timestamp convertedStartDate = Timestamp.valueOf(localStartDate.atStartOfDay());
+        Timestamp convertedEndDate = Timestamp.valueOf(localEndDate.atTime(23, 59, 59));
 
         String sql = """
-        SELECT e.name AS employee_name, SUM(r.spentHours) AS totalSpentHours 
-        FROM report r
-        JOIN employee e ON r.employee_id = e.id
-        JOIN squad s ON e.squad_id = s.id
-        WHERE s.id = ? AND r.created_at BETWEEN ? AND ?
-        GROUP BY e.name ORDER BY e.name""";
+    SELECT e.name AS employee_name, r.description, r.spentHours, r.created_at 
+    FROM report r
+    JOIN employee e ON r.employee_id = e.id
+    JOIN squad s ON e.squad_id = s.id
+    WHERE s.id = ? AND r.created_at BETWEEN ? AND ? 
+    ORDER BY e.name, r.created_at
+    """;
 
         try {
             connection = ConnectionFactory.getConnection();
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, squadId);
-
-            if (startDate != null) {
-                preparedStatement.setDate(2, Date.valueOf(String.valueOf(startDate)));
-            } else {
-                preparedStatement.setNull(2, Types.DATE);
-            }
-            if (endDate != null) {
-                preparedStatement.setDate(3, Date.valueOf(String.valueOf(endDate)));
-            } else {
-                preparedStatement.setNull(3, Types.DATE);
-            }
+            preparedStatement.setTimestamp(2, convertedStartDate);
+            preparedStatement.setTimestamp(3, convertedEndDate);
 
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                ReportDTO employeeHours = new ReportDTO();
-                employeeHours.setEmployeeName(resultSet.getString("employee_name"));
-                employeeHours.setTotalSpentHours(resultSet.getInt("totalSpentHours"));
-                resultList.add(employeeHours);
+                ReportMemberDTO report = new ReportMemberDTO();
+                report.setEmployeeName(resultSet.getString("employee_name"));
+                report.setDescription(resultSet.getString("description"));
+                report.setTotalSpentHours(resultSet.getInt("spentHours"));
+                report.setCreatedAt(resultSet.getTimestamp("created_at"));
+
+                resultList.add(report);
             }
 
         } catch (SQLException e) {
@@ -101,6 +103,7 @@ public class ReportDaoImpl implements ReportDao<Report> {
         } finally {
             ConnectionFactory.close(preparedStatement, connection, resultSet);
         }
+
         return resultList;
     }
     @Override

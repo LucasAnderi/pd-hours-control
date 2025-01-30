@@ -2,6 +2,7 @@ package org.pd.pdhcapi.service.impl;
 
 import org.pd.pdhc.database.dao.ReportDao;
 import org.pd.pdhc.models.dto.ReportDTO;
+import org.pd.pdhc.models.dto.ReportMemberDTO;
 import org.pd.pdhcapi.service.ReportRestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,7 @@ public class ReportRestServiceImpl implements ReportRestService{
     }
 
     @Override
-    public List<ReportDTO> getSpentHoursByMembers(int squadId, String startDate, String endDate) {
-        // Chama o DAO para recuperar as horas gastas por cada membro no período
+    public List<ReportMemberDTO> getSpentHoursByMembers(int squadId, String startDate, String endDate) {
         return reportDao.getSpentHoursByMembersAndPeriod(squadId, startDate, endDate);
     }
 

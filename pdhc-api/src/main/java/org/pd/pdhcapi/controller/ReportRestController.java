@@ -4,6 +4,7 @@ package org.pd.pdhcapi.controller;
 import org.pd.pdhc.models.Report;
 
 import org.pd.pdhc.models.dto.ReportDTO;
+import org.pd.pdhc.models.dto.ReportMemberDTO;
 import org.pd.pdhcapi.service.ReportRestService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,7 +40,7 @@ public class ReportRestController {
     }
 
     @PostMapping("/spent-hours-by-employee")
-    public List<ReportDTO> getSpentHoursByMembers(@RequestBody ReportDTO reportDTO) {
+    public List<ReportMemberDTO> getSpentHoursByMembers(@RequestBody ReportDTO reportDTO) {
         return reportService.getSpentHoursByMembers(reportDTO.getSquadId(), reportDTO.getStartDate(), reportDTO.getEndDate());
     }
 
