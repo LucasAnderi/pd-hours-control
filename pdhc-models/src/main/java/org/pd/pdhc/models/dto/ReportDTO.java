@@ -12,6 +12,8 @@ public class ReportDTO {
     private String startDate;
     private String endDate;
 
+
+
     public ReportDTO() {}
 
 
@@ -39,8 +41,6 @@ public class ReportDTO {
         this.totalSpentHours = totalspentHours;
     }
 
-
-    // Getters e Setters dos Novos Campos
     public int getSquadId() {
         return squadId;
     }
