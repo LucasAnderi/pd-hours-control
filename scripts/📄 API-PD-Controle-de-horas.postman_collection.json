@@ -1,0 +1,967 @@
+{
+	"info": {
+		"_postman_id": "f443b2a9-8184-406b-ac82-beef113f2b45",
+		"name": "📄 API-PD-Controle-de-horas",
+		"description": "API desenvolvida ao participar do desafio de criar um projeto de controle de horas de funcionários para a PD soluções.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25469753"
+	},
+	"item": [
+		{
+			"name": "Collections",
+			"item": [
+				{
+					"name": "Squad",
+					"item": [
+						{
+							"name": "create-squad",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Time de Desenvolvimento\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8081/squad/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"squad",
+										"create"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "'Time de desenvolvimento",
+											"description": "nome do squad",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Rota para criar um squad rodando localmente o projeto"
+							},
+							"response": [
+								{
+									"name": "Successful Response",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"name\": \"Time de Desenvolvimento\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8081/squad/create",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"squad",
+												"create"
+											],
+											"query": [
+												{
+													"key": "name",
+													"value": "'Time de desenvolvimento",
+													"description": "nome do squad",
+													"disabled": true
+												}
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 30 Jan 2025 11:28:03 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "11"
+								}
+							]
+						}
+					],
+					"description": "Entidade squad é o time a qual um funcionário pertence.",
+					"auth": {
+						"type": "noauth"
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Employee",
+					"item": [
+						{
+							"name": "create-employee",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 4,\r\n  \"name\": \"Joãozinho\",\r\n  \"estimatedHours\": 8,\r\n  \"squadId\": 1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8081/employees/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"employees",
+										"create"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Gabriel",
+											"description": "nome do funcionário\n",
+											"disabled": true
+										},
+										{
+											"key": "estimatedhours",
+											"value": "8",
+											"description": "horas que o usuário planeja trabalhar",
+											"disabled": true
+										},
+										{
+											"key": "squadid",
+											"value": "1",
+											"description": "squad que o funcionário pertence",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Rota para criar um employee."
+							},
+							"response": [
+								{
+									"name": "Successful Response",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"id\": 4,\r\n  \"name\": \"Joãozinho\",\r\n  \"estimatedHours\": 8,\r\n  \"squadId\": 1\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8081/employees/create",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"employees",
+												"create"
+											],
+											"query": [
+												{
+													"key": "name",
+													"value": "Gabriel",
+													"description": "nome do funcionário\n",
+													"disabled": true
+												},
+												{
+													"key": "estimatedhours",
+													"value": "8",
+													"description": "horas que o usuário planeja trabalhar",
+													"disabled": true
+												},
+												{
+													"key": "squadid",
+													"value": "1",
+													"description": "squad que o funcionário pertence",
+													"disabled": true
+												}
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 30 Jan 2025 11:27:24 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "11"
+								}
+							]
+						}
+					],
+					"description": "Entidade funcionário",
+					"auth": {
+						"type": "noauth"
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Report",
+					"item": [
+						{
+							"name": "spent-hours-by-employee",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"squadId\": 2,\n  \"startDate\": \"2025-01-01\",\n  \"endDate\": \"2025-01-30\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:8081/report/spent-hours-by-employee",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"report",
+										"spent-hours-by-employee"
+									]
+								},
+								"description": "Requisição para buscar a lista de horas gastas por cada funcionário em determinada atividade, por periodo de tempo."
+							},
+							"response": [
+								{
+									"name": "Successful Response",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"squadId\": 2,\n  \"startDate\": \"2025-01-01\",\n  \"endDate\": \"2025-01-30\"\n}"
+										},
+										"url": {
+											"raw": "http://localhost:8081/report/spent-hours-by-employee",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"report",
+												"spent-hours-by-employee"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 30 Jan 2025 11:19:46 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"employeeName\": \"Gabriel\",\n        \"description\": \"Criar artes de divulgação do produto\",\n        \"totalSpentHours\": 6,\n        \"createdAt\": \"2025-01-29T22:01:34.000+00:00\"\n    },\n    {\n        \"employeeName\": \"Gabriel\",\n        \"description\": \"Coleta dos resultados de vendas\",\n        \"totalSpentHours\": 3,\n        \"createdAt\": \"2025-01-29T22:01:35.000+00:00\"\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "total-hours-by-squad",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"squadId\": 2,\n  \"startDate\": \"2025-01-01\",\n  \"endDate\": \"2025-01-30\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:8081/report/total-hours-by-squad",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"report",
+										"total-hours-by-squad"
+									],
+									"query": [
+										{
+											"key": "squadId",
+											"value": "2",
+											"description": "id da squad que employee pertence\n",
+											"disabled": true
+										},
+										{
+											"key": "startDate",
+											"value": "2025-01-01",
+											"description": "Data de inicio do intervalo em que deseja realizar a pesquisa\n",
+											"disabled": true
+										},
+										{
+											"key": "endDate",
+											"value": "2025-01-31",
+											"description": "Data de final do intervalo em que deseja realizar a pesquisa\n",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Retorna o total de horas gastas em atividades pela squad em um determinado periodo de tempo."
+							},
+							"response": [
+								{
+									"name": "Successful Response",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"squadId\": 2,\n  \"startDate\": \"2025-01-01\",\n  \"endDate\": \"2025-01-30\"\n}"
+										},
+										"url": {
+											"raw": "http://localhost:8081/report/total-hours-by-squad",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"report",
+												"total-hours-by-squad"
+											],
+											"query": [
+												{
+													"key": "squadId",
+													"value": "2",
+													"description": "id da squad que employee pertence\n",
+													"disabled": true
+												},
+												{
+													"key": "startDate",
+													"value": "2025-01-01",
+													"description": "Data de inicio do intervalo em que deseja realizar a pesquisa\n",
+													"disabled": true
+												},
+												{
+													"key": "endDate",
+													"value": "2025-01-31",
+													"description": "Data de final do intervalo em que deseja realizar a pesquisa\n",
+													"disabled": true
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 30 Jan 2025 11:21:47 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"totalSpentHours\": 9\n}"
+								}
+							]
+						},
+						{
+							"name": "average-hours-by-id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"squadId\": 2,\n  \"startDate\": \"2025-01-01\",\n  \"endDate\": \"2025-01-30\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:8081/report/average-hours-by-squad",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"report",
+										"average-hours-by-squad"
+									],
+									"query": [
+										{
+											"key": "squadid",
+											"value": "2",
+											"description": "Descrição: Retorna a média de horas gastas por squad.",
+											"disabled": true
+										},
+										{
+											"key": "startDate",
+											"value": "2025-01-01",
+											"description": "Data de inicio do intervalo em que deseja realizar a pesquisa",
+											"disabled": true
+										},
+										{
+											"key": "endDate",
+											"value": "2025-01-31",
+											"description": "Data de final do intervalo em que deseja realizar a pesquisa",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Retorna a média de horas gastas pelo squad em um determinado período de tempo."
+							},
+							"response": [
+								{
+									"name": "Succsessful Response",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"squadId\": 2,\n  \"startDate\": \"2025-01-01\",\n  \"endDate\": \"2025-01-30\"\n}"
+										},
+										"url": {
+											"raw": "http://localhost:8081/report/average-hours-by-squad",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"report",
+												"average-hours-by-squad"
+											],
+											"query": [
+												{
+													"key": "squadid",
+													"value": "2",
+													"description": "Descrição: Retorna a média de horas gastas por squad.",
+													"disabled": true
+												},
+												{
+													"key": "startDate",
+													"value": "2025-01-01",
+													"description": "Data de inicio do intervalo em que deseja realizar a pesquisa",
+													"disabled": true
+												},
+												{
+													"key": "endDate",
+													"value": "2025-01-31",
+													"description": "Data de final do intervalo em que deseja realizar a pesquisa",
+													"disabled": true
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 30 Jan 2025 11:23:50 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"daysInPeriod\": 30,\n    \"totalSpentHours\": 9,\n    \"squadId\": 2,\n    \"averageSpentHoursPerDay\": 0.3\n}"
+								}
+							]
+						},
+						{
+							"name": "create-report",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"description\": \"Implementação da tela de login\",\r\n  \"employeeId\": 1,\r\n  \"spentHours\": 5\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8081/report/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"report",
+										"create"
+									],
+									"query": [
+										{
+											"key": "description",
+											"value": "\"Implementação tela de login",
+											"description": "descrição da atividade",
+											"disabled": true
+										},
+										{
+											"key": "employeeid",
+											"value": "1",
+											"description": "Id do funcionário que realiza a atividade",
+											"disabled": true
+										},
+										{
+											"key": "spenthours",
+											"value": "5",
+											"description": "Horas gastas para realizar a atividade\n",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Rota para criar um report"
+							},
+							"response": [
+								{
+									"name": "Successful Response",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"description\": \"Implementação da tela de login\",\r\n  \"employeeId\": 1,\r\n  \"spentHours\": 5\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8081/report/create",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"report",
+												"create"
+											],
+											"query": [
+												{
+													"key": "description",
+													"value": "\"Implementação tela de login",
+													"description": "descrição da atividade",
+													"disabled": true
+												},
+												{
+													"key": "employeeid",
+													"value": "1",
+													"description": "Id do funcionário que realiza a atividade",
+													"disabled": true
+												},
+												{
+													"key": "spenthours",
+													"value": "5",
+													"description": "Horas gastas para realizar a atividade\n",
+													"disabled": true
+												}
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 30 Jan 2025 11:24:29 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "8"
+								}
+							]
+						}
+					],
+					"description": "Entidade report guarda as informações de horas gastas e data de cada atividade que o employee realizar",
+					"auth": {
+						"type": "noauth"
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			],
+			"description": "Coleção de requisições do projeto.",
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://farming-simulator.pstmn.io"
+		}
+	]
+}
