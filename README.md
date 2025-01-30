@@ -3,10 +3,10 @@
 Esta API permite gerenciar squads, funcionários e relatórios de horas gastas.
 
 ## 🛠️ Tecnologias
-- Java + Spring Boot
-- PostgreSQL
+- Java 17 + Spring Boot
+- PostgreSQL 14
 - Postman para testes
-
+- Para o front-end será usado Angular
 ## 📌 Rotas Disponíveis
 
 ### 🔹 Squad
